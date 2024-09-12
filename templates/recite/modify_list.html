@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> {{ t_listname }} - Modify - Reciter </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+    </head>
+    <body>
+        <div class="title">
+            Reciter
+            <a href="/"> Home </a>
+            |
+            <a href="/lists"> Wordlists </a>
+            |
+            <a href="/forum"> Forum </a>
+            |
+            <a href="/userlist"> Users </a>
+            |
+            {% if t_username == None %}
+                <a href="/login"> Login </a>
+            {% endif %}
+            {% if t_username != None %}
+                <a href="/login"> Switch Account </a>
+            |
+                <a href="/profile?username={{ t_username }}"> {{ t_username }} </a>
+            {% endif %}
+        </div>
+        <div class="contents">
+            <h2>Modifying wordlist</h2>
+            <form action="/modifier" method="post" class="contents_center">
+                <input type="text" name="listname" placeholder="List name" required value="{{t_listname}}" maxlength="64">
+                <br>
+                <textarea name="wordlist" placeholder="Words..." required class="passage">{{ t_info }}</textarea>
+                <br>
+                Difficulty level:
+                <select name="difficulty">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <br>
+                <select name="sm">
+                    <option value="n">No example sentence/explanation</option>
+                    <option value="y">Including example sentence/explanation</option>
+                </select>
+                {% if t_admin %}
+                    <br>
+                    <select name="o">
+                        <option value="y">Official</option>
+                        <option value="n">Unofficial</option>
+                    </select>
+                {% endif %}
+                <br>
+                <input type="hidden" name="id" value="{{ t_id }}">
+                <input type="submit" value="Done">
+            </form>
+        </div>
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>

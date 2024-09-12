@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> {{ t_username }} - Users - Reciter </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+        <!-- 引入KaTeX CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+        <!-- 引入KaTeX JavaScript -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "\\[", right: "\\]", display: true},
+                        {left: "$", right: "$", display: false},
+                        {left: "\\(", right: "\\)", display: false}
+                    ]
+                });
+            });
+        </script>
+        {% if t_theme == 'black' %}
+        <link href="../static/css/monokai.css" rel="stylesheet">
+        {% endif %}
+        {% if t_theme != 'black' %}
+        <link href="../static/css/default.css" rel="stylesheet">
+        {% endif %}
+    </head>
+    <body>
+        <div class="title">
+            Reciter
+            <a href="/"> Home </a>
+            |
+            <a href="/lists"> Wordlists </a>
+            |
+            <a href="/forum"> Forum </a>
+            |
+            <a href="/userlist"> Users </a>
+            |
+            {% if t_realname == None %}
+                <a href="/login"> Login </a>
+            {% endif %}
+            {% if t_realname != None %}
+                <a href="/login"> Switch Account </a>
+            |
+                <a href="/profile?username={{ t_realname }}"> {{ t_realname }} </a>
+            {% endif %}
+        </div>
+        <div class="contents">
+            <h2>{{ t_username }}</h2>
+
+            <h3>Register time </h3>
+            {{ t_timef }}
+
+            {% if t_realname == t_username %}
+            <h3> Change color theme </h3>
+            <form action="/change_theme" method="post">
+                <select name="theme">
+                    {% if t_theme == 'black' %}
+                        <option value="black">Dark</option>
+                        <option value="white">Light</option>
+                    {% endif %}
+                    {% if t_theme == 'white' %}
+                        <option value="white">Light</option>
+                        <option value="black">Dark</option>
+                    {% endif %}
+                </select>
+                <input type="submit" value="更改">
+            </form>
+            {% endif %}
+
+            <h3>Introduction</h3>
+
+            {% if t_realname == t_username or t_admin %}
+                <a href="/modify_intro?username={{ t_username }}">Edit</a>
+                <br>
+            {% endif %}
+            <div class="text_show">
+                {{ t_intro|safe }}
+            </div>
+
+            <h3>Wordlists provided</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">List name</th>
+                        <th scope="col">Difficulty</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_userlist %}
+                        <tr>
+                            <td>
+                                <a href="/show_list?id={{ i['id'] }}"> {{ i['listname'] }} </a>
+                            </td>
+                            <td>
+                                {{ i['difficulty'] }}
+                            </td>
+                            <td>
+                                {{ i['timef'] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Records</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">List name</th>
+                        <th scope="col">Creater</th>
+                        <th scope="col">Difficulty</th>
+                        <th scope="col">Finish time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_list_record %}
+                        <tr>
+                            <td>
+                                <a href="/show_list?id={{ i['id'] }}"> {{ i['listname'] }} </a>
+                            </td>
+                            <td>
+                                <a href="/profile?username={{ i['username'] }}"> {{ i['username'] }} </a>
+                            </td>
+                            <td>
+                                {{ i['difficulty'] }}
+                            </td>
+                            <td>
+                                {{ i['timef'] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h3>Posted Articles</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_articleslist %}
+                        <tr>
+                            <td>
+                                <a href="/articles?id={{ i['id'] }}"> {{ i['title'] }} </a>
+                            </td>
+                            <td>
+                                {{ i['timef'] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if t_username == t_realname %}
+                <h3>Change your password</h3>
+                <form action="/change_password" method="post">
+                    <input type="password" name="old" placeholder="Original password" required>
+
+                    <input type="password" name="new" placeholder="New password" required>
+
+                    <input type="password" name="new2" placeholder="Repeat new password" required>
+
+                    {{ t_error }}
+                    <br>
+                    <input type="submit" value="Submit">
+                </form>
+            {% endif %}
+        </div>
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>

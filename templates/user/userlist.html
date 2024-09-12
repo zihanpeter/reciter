@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> Users - Reciter </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+    </head>
+    <body>
+        <div class="title">
+            Reciter
+            <a href="/"> Home </a>
+            |
+            <a href="/lists"> Wordlists </a>
+            |
+            <a href="/forum"> Forum </a>
+            |
+            <a href="/userlist"> Users </a>
+            |
+            {% if t_username == None %}
+                <a href="/login"> Login </a>
+            {% endif %}
+            {% if t_username != None %}
+                <a href="/login"> Switch Account </a>
+            |
+                <a href="/profile?username={{ t_username }}"> {{ t_username }} </a>
+            {% endif %}
+        </div>
+        <div class="contents">
+            <h2>Administrators</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Register Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_dics %}
+                        {% if i['admin'] %}
+                            <tr>
+                                <td scope="row">
+                                    <a href="/profile?username={{ i['username'] }}">{{ i['username'] }} </a>
+                                </td>
+                                <td>{{ i['timef'] }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2>Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Register Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_dics %}
+                        {% if not i['admin'] %}
+                            <tr>
+                                <td scope="row">
+                                    <a href="/profile?username={{ i['username'] }}">{{ i['username'] }} </a>
+                                </td>
+                                <td>{{ i['timef'] }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>

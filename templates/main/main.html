@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> Reciter </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+    </head>
+
+    <body>
+        <div class="title">
+            <a href="/lists"> Wordlists </a>
+            |
+            <a href="/forum"> Forum </a>
+            |
+            <a href="/userlist"> Users </a>
+            |
+            {% if t_username == None %}
+                <a href="/login"> Login </a>
+            {% endif %}
+            {% if t_username != None %}
+                <a href="/login"> Switch Account </a>
+            |
+                <a href="/profile?username={{ t_username }}"> {{ t_username }} </a>
+            {% endif %}
+        </div>
+
+        <div class="contents">
+            <h1> Reciter </h1>
+            <h3> News & Notice </h3>
+            {% for i in t_top %}
+                <a href="/articles?id={{ i['id'] }}"> {{ i['title'] }} </a>
+                <br>
+            {% endfor %}
+            <h3> Recent Articles </h3>
+                {% for i in t_rec %}
+                    <a href="/articles?id={{ i['id'] }}"> {{ i['title'] }} </a>
+                    <br>
+
+                {% endfor %}
+            <h3> Latest Wordlists </h3>
+                {% for i in t_lists %}
+                    <a href="/show_list?id={{ i['id'] }}"> {{ i['listname'] }} </a>
+                    <br>
+                {% endfor %}
+        </div>
+
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>

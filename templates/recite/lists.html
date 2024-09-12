@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> Wordlists - Reciter </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+    </head>
+
+    <body>
+        <div class="title">
+            Reciter
+            <a href="/"> Home </a>
+            |
+            <a href="/lists"> Wordlists </a>
+            |
+            <a href="/forum"> Forum </a>
+            |
+            <a href="/userlist"> Users </a>
+            |
+            {% if t_username == None %}
+                <a href="/login"> Login </a>
+            {% endif %}
+            {% if t_username != None %}
+                <a href="/login"> Switch Account </a>
+            |
+                <a href="/profile?username={{ t_username }}"> {{ t_username }} </a>
+            {% endif %}
+        </div>
+        <h2>Wordlists</h2>
+        <div class="contents">
+            <a href="/create"> Create a new Wordlist </a>
+
+            <h3> Skip </h3>
+            <form action="/show_list" method="get">
+                <input type="text" name="id" placeholder="List ID" required>
+                <input type="submit" value="Go!">
+            </form>
+
+            <h3>Select: </h3>
+            <form action="/lists" method="get">
+                Difficulty:
+                <select name="difficulty">
+                    <option value="all">All</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <input type="text" name="key" placeholder="List name">
+                <select name="show_mode" id="">
+                    {% if t_show_mode == 'official' %}
+                    <option value="official">Official</option>
+                    <option value="users">Users</option>
+                    {% endif %}
+                    {% if t_show_mode == 'users' %}
+                    <option value="users">Users</option>
+                    <option value="official">Official</option>
+                    {% endif %}
+                </select>
+                <input type="submit" name="mode" value="OK">
+            </form>
+
+            {% if t_show_mode == 'official' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">List name</th>
+                        <th scope="col">Creater</th>
+                        <th scope="col">Difficulty</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_lists_o %}
+                        <tr>
+                            <td>
+                                <a href="/show_list?id={{ i['id'] }}"> {{ i['listname'] }} </a>
+                            </td>
+                            <td>
+                                <a href="/profile?username={{ i['username'] }}"> {{ i['username'] }} </a>
+                            </td>
+                            <td>
+                                {{ i['difficulty'] }}
+                            </td>
+                            <td>
+                                {{ i['timef'] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+            {% if t_show_mode == 'users' %}
+            <h3> User lists </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">List name</th>
+                        <th scope="col">Creater</th>
+                        <th scope="col">Difficulty</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_lists_u %}
+                        <tr>
+                            <td>
+                                <a href="/show_list?id={{ i['id'] }}"> {{ i['listname'] }} </a>
+                            </td>
+                            <td>
+                                <a href="/profile?username={{ i['username'] }}"> {{ i['username'] }} </a>
+                            </td>
+                            <td>
+                                {{ i['difficulty'] }}
+                            </td>
+                            <td>
+                                {{ i['timef'] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>

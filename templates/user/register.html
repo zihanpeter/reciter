@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> Reciter - Register </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+    </head>
+    <body>
+        <h1> Reciter </h1>
+        <div class="contents_center">
+            <h2> Register </h2>
+            Usernames can be made up of only three types of characters:
+            <br>
+            1. English letters 2. Chinese characters 3. Numbers
+            <br>
+            No longer than 32 characters.
+            <br>
+            <form action="/check_register" method="post">
+                <input type="text" name="username" placeholder="Username" maxlength="32" required>
+                <br>
+                <input type="password" name="password" placeholder="Password" required>
+                <br>
+                <input type="password" name="password2" placeholder="Repeat password" required>
+                <br>
+                {{ t_error }}
+                <br>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>

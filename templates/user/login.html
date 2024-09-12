@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title> Reciter - Login </title>
+        <link href="../static/css/white_theme.css" rel="stylesheet">
+        {% if t_theme == 'black' %}
+        <link href="../static/css/black_theme.css" rel="stylesheet">
+        {% endif %}
+    </head>
+    <body>
+        <h1> Reciter </h1>
+        <div class="contents_center">
+            <h2> Login </h2>
+            <form action="/check_login" method="post">
+                <input type="text" name="username" placeholder="Username" required>
+                <br>
+                <input type="password" name="password" placeholder="Password" required>
+                <br>
+                {{ t_error }}
+                <br>
+                Haven't got a account yet?
+                <br>
+                <a href="/register"> Register </a>
+                <br>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+        <div class="copy">
+            Developed by PeterLu. <br>
+            2024, ©️ Reciter Dev Team <br>
+            All rights reserved.
+        </div>
+    </body>
+</html>
