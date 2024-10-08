@@ -252,7 +252,7 @@ def check_recite():
         sen = dic['sen'][dic['show']]
     else:
         sen = ''
-    if dic['tong'][dic['en'][dic['show']]] == 0:
+    if dic['tong'][dic['en'][dic['show']]] <= 0:
         dic['num'] -= 1
         del dic['en'][dic['show']]
         del dic['zh'][dic['show']]
