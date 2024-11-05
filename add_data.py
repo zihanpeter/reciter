@@ -4,8 +4,7 @@ import pymongo
 client = pymongo.MongoClient()
 db = client.reciter
 
-dics = list(db.users.find())
 
-for i in dics:
-    i['intro'] = 'Nothing'
-    db.users.update({'username': i['username']}, i)
+i = db.users.find({'username': 'PeterLu'})
+i['admin'] = True
+db.users.update({'username': 'PeterLu'}, i)

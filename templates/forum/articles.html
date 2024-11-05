@@ -54,7 +54,7 @@
         </div>
         <div class="contents">
 
-            {% if t_dis['username'] == t_username or t_admin[t_username] %}
+            {% if t_dis['username'] == t_username or t_admin %}
                 <a href="/modify_articles?id={{ t_dis['id'] }}">Modify</a>
             <br>
                 <a href="/check_del_articles?id={{ t_dis['id'] }}">Delete</a>
