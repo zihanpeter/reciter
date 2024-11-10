@@ -137,7 +137,7 @@
                 <a href="#" class="add-text" data-text="@{{t_dis['comment'][i]['username']}}">Reply</a>
 
 
-                {% if t_dis['username'] == t_username or t_admin[t_username] %}
+                {% if t_dis['username'] == t_username or t_admin %}
                     |
                     <a href="/del_comment?id={{t_dis['id']}}&num={{i}}&sorter={{t_sorter}}&sum={{t_size}}">Delete</a>
                 {% endif %}
