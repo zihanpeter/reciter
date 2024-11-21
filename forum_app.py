@@ -126,10 +126,10 @@ def check_disucss():
     con = attack_cleaner(con)
     db.articles.insert_one({'id': id,
                            'username': session.get('username'),
-                           'title': title, 
-                           'content': con, 
-                           'timef': now_temp, 
-                           'comment': [], 
+                           'title': title,
+                           'content': con,
+                           'timef': now_temp,
+                           'comment': [],
                            'top': top2})
     return redirect('/forum')
 
@@ -154,7 +154,7 @@ def articles():
     else:
         admin = db.users.find_one({'username': session['username']})['admin']
     return render_template('forum/articles.html',
-                           t_dis=dis, 
+                           t_dis=dis,
                            t_username=session.get('username'),
                            t_size=sizet,
                            t_admin=admin,
@@ -237,9 +237,9 @@ def post_comment():
             to = None
     now = time.localtime()
     now_temp = time.strftime("%Y-%m-%d %H:%M", now)
-    dis['comment'].append({'content': content, 
-                           'timef': now_temp, 
-                           'username': usr, 
+    dis['comment'].append({'content': content,
+                           'timef': now_temp,
+                           'username': usr,
                            'to': to})
     db.articles.update({'id': id}, dis)
     return redirect('/articles?id=' + id)

@@ -1,10 +1,15 @@
-import pymongo
+from pymongo import MongoClient
+from gridfs import GridFS
 
 
-client = pymongo.MongoClient()
-db = client.reciter
+# 连接到MongoDB
+client = MongoClient()
+db = client.forum
 
+# 创建GridFS实例
+fs = GridFS(db)
 
-i = db.users.find({'username': 'PeterLu'})
-i['admin'] = True
-db.users.update({'username': 'PeterLu'}, i)
+# 查找数据
+file = fs.find()
+
+print(file)
