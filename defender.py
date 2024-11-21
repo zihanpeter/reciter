@@ -2,7 +2,7 @@ import pymongo
 
 
 client = pymongo.MongoClient()
-db = client.users
+db = client.reciter
 
 a = [{"_id":{"$oid":"6733381ff5e59132d607245d"},"username":"13569907756","password":"123456","timef":"2024-11-12 19:12","list_record":[],"intro":"Nothing","theme":"white","admin":False},
 {"_id":{"$oid":"67333846f5e59132d607245e"},"username":"18647842184","password":"123456","timef":"2024-11-12 19:13","list_record":[],"intro":"Nothing","theme":"white","admin":False},
@@ -3237,4 +3237,4 @@ a = [{"_id":{"$oid":"6733381ff5e59132d607245d"},"username":"13569907756","passwo
 
 for i in a:
     x = {'username': i['username']}
-    db.delete_one(x)
+    db.users.delete_one(x)
