@@ -3238,3 +3238,5 @@ a = [{"_id":{"$oid":"6733381ff5e59132d607245d"},"username":"13569907756","passwo
 for i in a:
     x = {'username': i['username']}
     db.users.delete_one(x)
+    db.lists.delete_one(x)
+    db.articles.delete_one(x)
