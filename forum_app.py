@@ -102,6 +102,8 @@ def attack_cleaner(con):
 def check_disucss():
     if session.get('username') == None:
         return redirect('/login')
+    if db.users.find_one({'username': session.get('username')})['admin'] == False:
+        return redirect('/lists')
     title = request.form.get('title')
     con = request.form.get('content')
     id = str(uuid.uuid1())
@@ -209,6 +211,8 @@ def check_to(to):
 
 @forum_app.route('/post_comment', methods=['POST']) # 发布评论
 def post_comment():
+    if db.users.find_one({'username': session.get('username')})['admin'] == False:
+        return redirect('/articles')
     id = request.form.get('id')
     con = request.form.get('content')
     usr = request.form.get('username')

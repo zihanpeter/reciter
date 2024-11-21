@@ -58,6 +58,7 @@ def register():
 
 @user_app.route('/check_register', methods=['POST']) # 处理注册信息
 def check_register():
+    return redirect('/')
     username = request.form['username']
     password = request.form['password']
     password2 = request.form.get('password2')

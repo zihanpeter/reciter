@@ -88,6 +88,8 @@ def create():
 def check_create():
     if session.get('username') == None:
         return redirect('/login')
+    if db.users.find_one({'username': session.get('username')})['admin'] == False:
+        return redirect('/lists')
     wordlist = request.form['wordlist']
     listname = request.form['listname']
     difficulty = request.form.get('difficulty')
