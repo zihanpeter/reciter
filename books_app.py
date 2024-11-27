@@ -7,8 +7,8 @@ import bleach
 import re
 
 
-forum_app = Blueprint('books_app', __name__)
-forum_app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+books_app = Blueprint('books_app', __name__)
+books_app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
 client = pymongo.MongoClient()
 db = client.reciter
 
@@ -18,5 +18,11 @@ db = client.reciter
 
     id 词汇书id
     name 词汇书名
+    lists[] 词汇表
     
 '''
+
+@books_app.route('/books')
+def books():
+
+
