@@ -53,6 +53,7 @@ def check_login():
 
 @user_app.route('/register') # 提供注册页面
 def register():
+    return redirect('/')
     return render_template('user/register.html', t_theme=get_theme())
 
 
