@@ -3,10 +3,11 @@ import pymongo
 import uuid
 import random
 import time
+import defender
 
 
 recite_app = Blueprint('recite_app', __name__)
-recite_app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+recite_app.secret_key = 'aiueb823hfkah38whwkdnfea874hiwn'
 client = pymongo.MongoClient()
 db = client.reciter
 
@@ -78,18 +79,30 @@ def create():
     if session.get('username') == None:
         return redirect('/login')
     userdic = db.users.find_one({'username': session['username']})
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
     return render_template('recite/create.html',
                            t_username=session.get('username'),
                            t_admin=userdic['admin'],
-                           t_theme=get_theme())
+                           t_theme=get_theme(),
+                           t_captcha_image=captcha_image)
 
 
 @recite_app.route('/check_create', methods=['POST']) # 处理提供的创建信息
 def check_create():
     if session.get('username') == None:
         return redirect('/login')
-    if db.users.find_one({'username': session.get('username')})['admin'] == False:
-        return redirect('/lists')
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
+        userdic = db.users.find_one({'username': session['username']})
+        return render_template('recite/create.html',
+                           t_username=session.get('username'),
+                           t_admin=userdic['admin'],
+                           t_theme=get_theme(),
+                           t_captcha_image=captcha_image,
+                            t_error='Wrong graph validate code')
     wordlist = request.form['wordlist']
     listname = request.form['listname']
     difficulty = request.form.get('difficulty')
@@ -421,13 +434,15 @@ def del_list():
             db.users.update({'username': i['username']}, i)
         return redirect('/lists')
     else:
-        return '没有权限'
+        return 'No permission'
 
 
-@recite_app.route('/modify_list', methods=['GET'])
+@recite_app.route('/modify_list', methods=['GET']) # provide modification page
 def modify_list():
     if session.get('username') == None:
         return redirect('/login')
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
     id = request.args.get('id')
     dic = db.lists.find_one({'id': id})
     userdic = db.users.find_one({'username': session['username']})
@@ -438,21 +453,30 @@ def modify_list():
             info += dic['zh'][i] + '\n'
             if dic['sm']:
                 info += dic['sen'][i] + '\n'
+        errorr = request.args.get('error')
+        if errorr == None:
+            errorr = ''
         return render_template('recite/modify_list.html',
                                t_id=id,
                                t_info=info,
                                t_admin=userdic['admin'],
                                t_listname=dic['listname'],
                                t_username=session['username'],
-                               t_theme=get_theme())
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image,
+                               t_error=errorr)
     else:
-        return '没有权限'
+        return 'No permission'
 
 
-@recite_app.route('/modifier', methods=['POST'])
+@recite_app.route('/modifier', methods=['POST']) # check the modification infomation
 def modifier():
     if session.get('username') == None:
         return redirect('/login')
+    id = request.form.get('id')
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        return redirect('/modify_list?id=' + id + '&error=Wrong graph validate code')
     wordlist = request.form.get('wordlist')
     listname = request.form.get('listname')
     difficulty = request.form.get('difficulty')
@@ -498,7 +522,6 @@ def modifier():
             else:
                 s += i
         zh.append(s)
-    id = request.form.get('id')
     dic = db.lists.find_one({'id': id})
     if o == 'y':
         o = True

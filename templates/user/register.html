@@ -21,11 +21,14 @@
             <form action="/check_register" method="post">
                 <input type="text" name="username" placeholder="Username" maxlength="32" required>
                 <br>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Password" maxlength="32" required>
+                <input type="password" name="password2" placeholder="Repeat password" maxlength="32" required>
                 <br>
-                <input type="password" name="password2" placeholder="Repeat password" required>
+                <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
+
                 <br>
-                {{ t_error }}
+                <p class="error">{{ t_error }}</p>
                 <br>
                 <input type="submit" value="Register">
             </form>

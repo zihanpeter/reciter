@@ -4,13 +4,14 @@ import pymongo
 from user_app import user_app
 from recite_app import recite_app
 from forum_app import forum_app
-
+from yule_app import yule_app
 
 app = Flask(__name__)
-app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+app.secret_key = 'aiueb823hfkah38whwkdnfea874hiwn'
 app.register_blueprint(user_app)
 app.register_blueprint(recite_app)
 app.register_blueprint(forum_app)
+app.register_blueprint(yule_app)
 
 client = pymongo.MongoClient()
 db = client.reciter

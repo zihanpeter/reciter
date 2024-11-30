@@ -5,10 +5,11 @@ import time
 import markdown
 import bleach
 import re
+import defender
 
 
 forum_app = Blueprint('forum_app', __name__)
-forum_app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+forum_app.secret_key = 'aiueb823hfkah38whwkdnfea874hiwn'
 client = pymongo.MongoClient()
 db = client.reciter
 
@@ -59,11 +60,14 @@ def forum():
 def create_articles():
     if session.get('username') == None:
         return redirect('/login')
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
     userdic = db.users.find_one({'username': session['username']})
     return render_template('forum/create_articles.html',
                            t_username=session.get('username'),
                            t_admin=userdic['admin'],
-                           t_theme=get_theme())
+                           t_theme=get_theme(),
+                           t_captcha_image=captcha_image)
 
 
 # 定义一个函数，用于提取Markdown中的代码块
@@ -102,8 +106,17 @@ def attack_cleaner(con):
 def check_disucss():
     if session.get('username') == None:
         return redirect('/login')
-    if db.users.find_one({'username': session.get('username')})['admin'] == False:
-        return redirect('/lists')
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
+        userdic = db.users.find_one({'username': session['username']})
+        return render_template('forum/create_articles.html',
+                               t_username=session.get('username'),
+                               t_admin=userdic['admin'],
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image,
+                               t_error='Wrong graph validate code')
     title = request.form.get('title')
     con = request.form.get('content')
     id = str(uuid.uuid1())
@@ -136,10 +149,12 @@ def check_disucss():
     return redirect('/forum')
 
 
-@forum_app.route('/articles', methods=['GET']) # 展示讨论
+@forum_app.route('/articles', methods=['GET']) # 展示articles
 def articles():
-    id = request.args.get('id')
-    dis = db.articles.find_one({'id': id})
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
+    iid = request.args.get('id')
+    dis = db.articles.find_one({'id': iid})
     sorter = request.args.get('sorter')
     if (sorter == None or sorter == 'inverted'):
         sorter = 'inverted'
@@ -155,6 +170,9 @@ def articles():
         admin = False
     else:
         admin = db.users.find_one({'username': session['username']})['admin']
+    errorr = request.args.get('error')
+    if errorr == None:
+        errorr = ''
     return render_template('forum/articles.html',
                            t_dis=dis,
                            t_username=session.get('username'),
@@ -162,7 +180,9 @@ def articles():
                            t_admin=admin,
                            t_sorter=sorter,
                            t_theme=get_theme(),
-                           t_content=content)
+                           t_content=content,
+                           t_error=errorr,
+                           t_captcha_image=captcha_image)
 
 
 # @forum_app.route('/mod_top', methods=['POST']) # 更改置顶
@@ -197,7 +217,7 @@ def del_articles():
         db.articles.delete_one({'id': id})
         return redirect('/forum')
     else:
-        return '没有权限'
+        return 'No permission'
 
 
 def check_to(to):
@@ -211,12 +231,13 @@ def check_to(to):
 
 @forum_app.route('/post_comment', methods=['POST']) # 发布评论
 def post_comment():
-    if db.users.find_one({'username': session.get('username')})['admin'] == False:
-        return redirect('/articles')
-    id = request.form.get('id')
+    user_captcha = request.form.get('user_captcha').lower()
+    iid = request.form.get('id')
+    if user_captcha != session['captcha']:
+        return redirect('/articles?id=' + iid + '&error=Wrong graph validation code')
     con = request.form.get('content')
     usr = request.form.get('username')
-    dis = db.articles.find_one({'id': id})
+    dis = db.articles.find_one({'id': iid})
     content = []
     s = ''
     to = None
@@ -235,7 +256,7 @@ def post_comment():
             s += i
     content.append(s)
     if to != None and s == '':
-        return redirect('/articles?id=' + id)
+        return redirect('/articles?id=' + iid)
     if to != None:
         if check_to(to):
             to = None
@@ -245,62 +266,73 @@ def post_comment():
                            'timef': now_temp,
                            'username': usr,
                            'to': to})
-    db.articles.update({'id': id}, dis)
-    return redirect('/articles?id=' + id)
+    db.articles.update({'id': iid}, dis)
+    print("-------------")
+    return redirect('/articles?id=' + iid)
 
 
 @forum_app.route('/del_comment', methods=['GET']) # 删除评论
 def del_comment():
     if session.get('username') == None:
         return redirect('/login')
-    id = request.args.get('id')
+    iid = request.args.get('id')
     num = int(request.args.get('num'))
     sorter = request.args.get('sorter')
     sum = int(request.args.get('sum'))
-    dis = db.articles.find_one({'id': id})
+    dis = db.articles.find_one({'id': iid})
     if dis['username'] == session.get('username') or db.users.find_one({'username': session['username']})['admin']:
         if sorter == 'inverted':
             num = sum - 1 - num
-        dis = db.articles.find_one({'id': id})
+        dis = db.articles.find_one({'id': iid})
         del dis['comment'][num]
-        db.articles.update({'id': id}, dis)
-        return redirect('/articles?id=' + id)
+        db.articles.update({'id': iid}, dis)
+        return redirect('/articles?id=' + iid)
     else:
-        return '没有权限'
+        return 'No permission'
 
 
-@forum_app.route('/modify_articles', methods=['GET'])
+@forum_app.route('/modify_articles', methods=['GET']) # provide the modifier page
 def modify_articles():
     if session.get('username') == None:
         return redirect('/login')
-    id = request.args.get('id')
-    dic = db.articles.find_one({'id': id})
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
+    iid = request.args.get('id')
+    dic = db.articles.find_one({'id': iid})
     admin = db.users.find_one({'username': session['username']})['admin']
     if dic['username'] == session.get('username') or admin:
         title = dic['title']
         # info = ''
         # for i in dic['content']:
         #     info += i + '\n'
+        errorr = request.args.get('error')
+        if errorr == None:
+            errorr = ''
         return render_template('forum/modify_articles.html',
                                t_title=title,
                                t_info=dic['content'],
                                t_admin=admin,
-                               t_id=id,
+                               t_id=iid,
                                t_username=session.get('username'),
-                               t_theme=get_theme())
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image,
+                               t_error=errorr)
     else:
-        return '没有权限'
+        return 'No permission'
 
 
-@forum_app.route('/modifier_articles', methods=['POST'])
+@forum_app.route('/modifier_articles', methods=['POST']) # check the modified information
 def modifier_articles():
     if session.get('username') == None:
         return redirect('/login')
+    user_captcha = request.form.get('user_captcha').lower()
+    iid = request.form.get('id')
+    if user_captcha != session['captcha']:
+        return redirect('/modify_articles?id=' + iid + '&error=Wrong graph validate code')
     title = request.form.get('title')
     content = request.form.get('content')
     top = request.form.get('top')
-    id = request.form.get('id')
-    dic = db.articles.find_one({'id': id})
+    dic = db.articles.find_one({'id': iid})
     if top == 'False':
         top2 = False
     elif top == 'True':
@@ -321,5 +353,5 @@ def modifier_articles():
     dic['title'] = title
     dic['content'] = attack_cleaner(content)
     dic['top'] = top2
-    db.articles.update({'id': id}, dic)
+    db.articles.update({'id': iid}, dic)
     return redirect('/forum')

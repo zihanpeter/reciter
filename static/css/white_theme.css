@@ -70,3 +70,7 @@ td {
     width: 70vw;
     margin: auto auto;
 }
+
+.error {
+    color: red;
+}

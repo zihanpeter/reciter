@@ -40,6 +40,8 @@
             |
             <a href="/forum"> Forum </a>
             |
+            <a href="/yule"> Yule </a>
+            |
             <a href="/userlist"> Users </a>
             |
             {% if t_realname == None %}
@@ -58,7 +60,7 @@
             {{ t_timef }}
 
             {% if t_realname == t_username %}
-            <h3> Change color theme </h3>
+            <h3> Color theme </h3>
             <form action="/change_theme" method="post">
                 <select name="theme">
                     {% if t_theme == 'black' %}
@@ -70,7 +72,7 @@
                         <option value="black">Dark</option>
                     {% endif %}
                 </select>
-                <input type="submit" value="更改">
+                <input type="submit" value="Submit">
             </form>
             {% endif %}
 
@@ -167,11 +169,14 @@
                 <form action="/change_password" method="post">
                     <input type="password" name="old" placeholder="Original password" required>
 
-                    <input type="password" name="new" placeholder="New password" required>
+                    <input type="password" name="new" placeholder="New password" maxlength="32" required>
 
-                    <input type="password" name="new2" placeholder="Repeat new password" required>
-
-                    {{ t_error }}
+                    <input type="password" name="new2" placeholder="Repeat new password" maxlength="32" required>
+                    <br>
+                    <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                    <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
+                    <br>
+                    <p class="error">{{ t_error }}</p>
                     <br>
                     <input type="submit" value="Submit">
                 </form>

@@ -14,3 +14,7 @@ td {
 a {
     color: aqua;
 }
+
+.error {
+    color: red;
+}

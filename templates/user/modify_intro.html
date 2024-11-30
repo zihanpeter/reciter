@@ -17,6 +17,8 @@
             |
             <a href="/forum"> Forum </a>
             |
+            <a href="/yule"> Yule </a>
+            |
             <a href="/userlist"> Users </a>
             |
             {% if t_username == None %}
@@ -31,7 +33,7 @@
         <div class="contents">
             <h2>Edit Your Introduction</h2>
             <form action="/modifier_intro" method="post" class="create_form">
-                <textarea name="intro" placeholder="Edit at here" required class="passage">{{ t_info }}</textarea>
+                <textarea name="intro" placeholder="Edit at here" required class="passage" maxlength="1024">{{ t_info }}</textarea>
                 <br>
                 Supporting
                 <a href="https://help.luogu.com.cn/rules/academic/handbook/markdown">Markdown</a>
@@ -39,6 +41,12 @@
                 <a href="https://katex.org/docs/supported.html">KaTeX</a>
                 <br>
                 <input type="hidden" name="username" value="{{t_username}}">
+                <br>
+                <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
+                <br>
+                <p class="error">{{ t_error }}</p>
+                <br>
                 <input type="submit" value="Done">
             </form>
         </div>

@@ -17,6 +17,8 @@
             |
             <a href="/forum"> Forum </a>
             |
+            <a href="/yule"> Yule </a>
+            |
             <a href="/userlist"> Users </a>
             |
             {% if t_username == None %}
@@ -34,7 +36,7 @@
             <form action="/modifier_articles" method="post">
                 <input type="text" name="title" placeholder="Title" required value="{{t_title}}" maxlength="64">
                 <br>
-                <textarea name="content" placeholder="Contents" required class="passage">{{ t_info }}</textarea>
+                <textarea name="content" placeholder="Contents" required class="passage" maxlength="8000">{{ t_info }}</textarea>
                 <br>
                 {% if t_admin %}
                     <select name="top">
@@ -50,6 +52,12 @@
                 <a href="https://katex.org/docs/supported.html">KaTeX</a>
                 <br>
                 <input type="hidden" name="id" value="{{t_id}}">
+                <br>
+                <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
+                <br>
+                <p class="error">{{ t_error }}</p>
+                <br>
                 <input type="submit" value="Done">
             </form>
         </div>

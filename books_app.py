@@ -8,7 +8,7 @@ import re
 
 
 books_app = Blueprint('books_app', __name__)
-books_app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+books_app.secret_key = 'aiueb823hfkah38whwkdnfea874hiwn'
 client = pymongo.MongoClient()
 db = client.reciter
 
@@ -16,13 +16,14 @@ db = client.reciter
 '''
     集合名 books
 
-    id 词汇书id
-    name 词汇书名
-    lists[] 词汇表
+    id 书籍名称
+    name 书名
+    lists[] 包含词汇表id
+    
     
 '''
 
 @books_app.route('/books')
 def books():
-
+    return redirect('/')
 

@@ -17,6 +17,8 @@
             |
             <a href="/forum"> Forum </a>
             |
+            <a href="/yule"> Yule </a>
+            |
             <a href="/userlist"> Users </a>
             |
             {% if t_username == None %}
@@ -34,7 +36,7 @@
             <form action="/check_articles" method="post">
                 <input type="text" name="title" placeholder="Title" required maxlength="64">
                 <br>
-                <textarea name="content" placeholder="Contents" required class="passage"></textarea>
+                <textarea name="content" placeholder="Contents" required class="passage" maxlength="8000"></textarea>
                 <br>
                 Supporting
                 <a href="https://help.luogu.com.cn/rules/academic/handbook/markdown">Markdown</a>
@@ -48,6 +50,13 @@
                     </select>
                     <br>
                 {% endif %}
+
+                <br>
+                <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
+                <br>
+                <p class="error">{{ t_error }}</p>
+                <br>
                 <input type="submit" value="Done">
             </form>
         </div>

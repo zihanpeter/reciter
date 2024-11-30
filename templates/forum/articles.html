@@ -41,6 +41,8 @@
             |
             <a href="/forum"> Forum </a>
             |
+            <a href="/yule"> Yule </a>
+            |
             <a href="/userlist"> Users </a>
             |
             {% if t_username == None %}
@@ -110,9 +112,15 @@
             <div class="show">
             {% if t_username != None %}
             <form action="/post_comment" method="post">
-                <textarea name="content" placeholder="Input here" required id="myTextarea"></textarea>
+                <textarea name="content" placeholder="Input here" required id="myTextarea" maxlength="1024"></textarea>
                 <input type="hidden" name="id" value="{{t_dis['id']}}">
                 <input type="hidden" name="username" value="{{t_username}}">
+                <br>
+                <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
+                <br>
+                <p class="error">{{ t_error }}</p>
+                <br>
                 <input type="submit" value="Submit">
             </form>
                 {% endif %}

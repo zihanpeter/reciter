@@ -18,6 +18,8 @@
             |
             <a href="/forum"> Forum </a>
             |
+            <a href="/yule"> Yule </a>
+            |
             <a href="/userlist"> Users </a>
             |
             {% if t_username == None %}
@@ -49,7 +51,7 @@
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>
-                <input type="text" name="key" placeholder="List name">
+                <input type="text" name="key" placeholder="List name" maxlength="64">
                 <select name="show_mode" id="">
                     {% if t_show_mode == 'official' %}
                     <option value="official">Official</option>

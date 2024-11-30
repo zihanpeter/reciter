@@ -4,10 +4,11 @@ import time
 import markdown
 import bleach
 import re
+import defender
 
 
 user_app = Blueprint('user_app', __name__)
-user_app.secret_key = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+user_app.secret_key = 'aiueb823hfkah38whwkdnfea874hiwn'
 client = pymongo.MongoClient()
 db = client.reciter
 
@@ -34,11 +35,23 @@ def get_theme():
 
 @user_app.route('/login') # 提供登录页面
 def login():
-    return render_template('user/login.html', t_theme=get_theme())
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
+    return render_template('user/login.html',
+                           t_theme=get_theme(),
+                           t_captcha_image=captcha_image)
 
 
 @user_app.route('/check_login', methods=['POST']) # 检查登录信息
 def check_login():
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
+        return render_template('user/login.html',
+                               t_error='Wrong graph validate code',
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image)
     username = request.form['username']
     password = request.form['password']
     res = db.users.find_one({'username': username, 'password': password})
@@ -53,13 +66,23 @@ def check_login():
 
 @user_app.route('/register') # 提供注册页面
 def register():
-    return redirect('/')
-    return render_template('user/register.html', t_theme=get_theme())
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
+    return render_template('user/register.html',
+                           t_theme=get_theme(),
+                           t_captcha_image=captcha_image)
 
 
 @user_app.route('/check_register', methods=['POST']) # 处理注册信息
 def check_register():
-    return redirect('/')
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
+        return render_template('user/register.html',
+                               t_error='Wrong graph validate code',
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image)
     username = request.form['username']
     password = request.form['password']
     password2 = request.form.get('password2')
@@ -96,6 +119,8 @@ def check_register():
 
 @user_app.route('/profile') # 提供用户信息页面
 def profile():
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
     username = request.args.get('username')
     userdic = db.users.find_one({'username': username})
     userlist = db.lists.find({'username': username})
@@ -120,11 +145,20 @@ def profile():
                            t_articleslist=articleslist,
                            t_intro=intro,
                            t_admin=admin,
-                           t_theme=get_theme())
+                           t_theme=get_theme(),
+                           t_captcha_image=captcha_image)
 
 
 @user_app.route('/change_password', methods=['POST']) # 处理更改密码信息
 def change_password():
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
+        return render_template('user/profile.html',
+                               t_error='Wrong graph validate code',
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image)
     resOld = request.form['old']
     resNew = request.form['new']
     new2 = request.form.get('new2')
@@ -163,8 +197,10 @@ def userlist():
                            t_theme=get_theme())
 
 
-@user_app.route('/modify_intro', methods=['GET'])
+@user_app.route('/modify_intro', methods=['GET']) # 提供修改用户简介页面
 def modify_intro():
+    captcha_text, captcha_image = defender.generate_captcha()
+    session['captcha'] = captcha_text.lower()
     username = request.args.get('username')
     dic = db.users.find_one({'username': username})
     if username == session['username'] or dic[session['username']]:
@@ -174,9 +210,10 @@ def modify_intro():
         return render_template('user/modify_intro.html',
                                t_info=dic['intro'],
                                t_username=username,
-                               t_theme=get_theme())
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image)
     else:
-        return '没有权限'
+        return 'No permission'
 
 
 # 定义一个函数，用于提取Markdown中的代码块
@@ -213,8 +250,19 @@ def attack_cleaner(con):
 
 @user_app.route('/modifier_intro', methods=['POST'])
 def modifier_intro():
-    return redirect('/')
     username = request.form.get('username')
+    dic = db.users.find_one({'username': username})
+    user_captcha = request.form.get('user_captcha').lower()
+    if user_captcha != session['captcha']:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
+        return render_template('user/modify_intro.html',
+                               t_info=dic['intro'],
+                               t_username=username,
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image,
+                               t_error='Wrong graph validate code')
+
     intro = request.form.get('intro')
     dic = db.users.find_one({'username': username})
     # s = ''

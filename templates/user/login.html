@@ -17,9 +17,12 @@
                 <br>
                 <input type="password" name="password" placeholder="Password" required>
                 <br>
-                {{ t_error }}
+                <img src="data:image/png;base64,{{ t_captcha_image | safe }}" alt="Captcha">
+                <input type="text" name="user_captcha" placeholder="Graph validate code" maxlength="4" required>
                 <br>
-                Haven't got a account yet?
+                <p class="error">{{ t_error }}</p>
+                <br>
+                Haven't got an account yet?
                 <br>
                 <a href="/register"> Register </a>
                 <br>

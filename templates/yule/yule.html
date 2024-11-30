@@ -2,16 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title> {{ t_listname }} - Tip - Reciter </title>
+        <title> Users - Reciter </title>
         <link href="../static/css/white_theme.css" rel="stylesheet">
         {% if t_theme == 'black' %}
         <link href="../static/css/black_theme.css" rel="stylesheet">
         {% endif %}
-        <script>
-            window.onload = function() {
-                document.getElementById('spell').focus();
-            };
-        </script>
     </head>
     <body>
         <div class="title">
@@ -35,20 +30,10 @@
                 <a href="/profile?username={{ t_username }}"> {{ t_username }} </a>
             {% endif %}
         </div>
-        <div class="contents_center">
-            Pattern: {{ t_pat }}
-            <h1>{{ t_zh }}</h1>
-            <h1>{{ t_en }}</h1>
-            {% if t_sm %}
-                <p class="sentence">{{ t_sen }}</p>
-            {% endif %}
-            Your answer:
-            <h1>{{ t_res }}</h1>
-            <form action="/recite" method="get">
-                <input type="text" id="spell" placeholder="You can type it again">
-                <br>
-                <input type="submit" value="Continue">
-            </form>
+        <div class="contents">
+            <h2>Yule</h2>
+            <p>A project before Christmas.</p>
+            <h3>Coming soon</h3>
         </div>
         <div class="copy">
             Developed by PeterLu. <br>
