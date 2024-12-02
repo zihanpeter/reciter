@@ -1,15 +1,7 @@
-from pymongo import MongoClient
-from gridfs import GridFS
+import pymongo
 
 
-# 连接到MongoDB
-client = MongoClient()
-db = client.forum
+client = pymongo.MongoClient()
+db = client.reciter
 
-# 创建GridFS实例
-fs = GridFS(db)
 
-# 查找数据
-file = fs.find()
-
-print(file)

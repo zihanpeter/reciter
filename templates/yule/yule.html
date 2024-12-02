@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title> Users - Reciter </title>
+        <title> Yule - Reciter </title>
         <link href="../static/css/white_theme.css" rel="stylesheet">
         {% if t_theme == 'black' %}
         <link href="../static/css/black_theme.css" rel="stylesheet">
@@ -33,7 +33,26 @@
         <div class="contents">
             <h2>Yule</h2>
             <p>A project before Christmas.</p>
-            <h3>Coming soon</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Games</th>
+                        <th scope="col">Hot</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in t_dics %}
+                        <tr>
+                            <td scope="row">
+                                <a href="/game?id={{ i['id'] }}">{{ i['name'] }} </a>
+                            </td>
+                            <td>{{ i['hot'] }}</td>
+                            <td>{{ i['timef'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         <div class="copy">
             Developed by PeterLu. <br>

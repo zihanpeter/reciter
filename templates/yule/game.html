@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game - Yule - Reciter</title>
+</head>
+<body>
+  <div class="title">
+            Reciter
+            <a href="/"> Home </a>
+            |
+            <a href="/lists"> Wordlists </a>
+            |
+            <a href="/forum"> Forum </a>
+            |
+            <a href="/yule"> Yule </a>
+            |
+            <a href="/userlist"> Users </a>
+            |
+            {% if t_username == None %}
+                <a href="/login"> Login </a>
+            {% endif %}
+            {% if t_username != None %}
+                <a href="/login"> Switch Account </a>
+            |
+                <a href="/profile?username={{ t_username }}"> {{ t_username }} </a>
+            {% endif %}
+  </div>
+  <div class="contents">
+    <h2>{{ t_name }}</h2>
+    
+    <p>{{ t_intro }}</p>
+
+  </div>
+</body>
+</html>
