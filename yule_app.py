@@ -60,7 +60,8 @@ def intro():
                            t_username=session.get('username'),
                            t_theme=get_theme(),
                            t_timef=dic['timef'],
-                           t_creator=dic['creator'])
+                           t_creator=dic['creator'],
+                           t_hot=dic['hot'])
 
 @yule_app.route('/games', methods=['GET'])
 def games():
