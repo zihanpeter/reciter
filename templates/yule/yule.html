@@ -38,6 +38,7 @@
                     <tr>
                         <th scope="col">Games</th>
                         <th scope="col">Hot</th>
+                        <th scope="col">Creator</th>
                         <th scope="col">Time</th>
                     </tr>
                 </thead>
@@ -45,9 +46,10 @@
                     {% for i in t_dics %}
                         <tr>
                             <td scope="row">
-                                <a href="/game?id={{ i['id'] }}">{{ i['name'] }} </a>
+                                <a href="/intro?id={{ i['id'] }}">{{ i['name'] }} </a>
                             </td>
                             <td>{{ i['hot'] }}</td>
+                            <td><a href="/profile?id={{ i['creator'] }}">{{ i['creator'] }} </a></td>
                             <td>{{ i['timef'] }}</td>
                         </tr>
                     {% endfor %}
@@ -55,7 +57,7 @@
             </table>
         </div>
         <div class="copy">
-            Developed by PeterLu. <br>
+            Developed by PeterLu & ycy. <br>
             2024, &copy Reciter Dev Team <br>
             All rights reserved.
         </div>

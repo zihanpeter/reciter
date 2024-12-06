@@ -56,8 +56,12 @@ def check_login():
     password = request.form['password']
     res = db.users.find_one({'username': username, 'password': password})
     if res == None:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
         return render_template('user/login.html',
-                               t_error='Wrong username or password.', t_theme=get_theme())
+                               t_error='Wrong username or password.',
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image)
     else:
         session['username'] = username
         session['theme'] = res['theme']
@@ -95,13 +99,19 @@ def check_register():
             if ('A' <= i <= 'Z') or ('a' <= i <= 'z') or ('0' <= i <= '9') or ('\u4e00' <= i <= '\u9fff'):
                 continue
             else:
+                captcha_text, captcha_image = defender.generate_captcha()
+                session['captcha'] = captcha_text.lower()
                 return render_template('user/register.html',
                                        t_error='The username is not allowed.',
-                                       t_theme=get_theme())
+                                       t_theme=get_theme(),
+                                       t_captcha_image=captcha_image)
         if password2 != password:
+            captcha_text, captcha_image = defender.generate_captcha()
+            session['captcha'] = captcha_text.lower()
             return render_template('user/register.html',
                                    t_error='Two passwords are different.',
-                                   t_theme=get_theme())
+                                   t_theme=get_theme(),
+                                   t_captcha_image=captcha_image)
         db.users.insert_one({'username': username, 
                              'password': password, 
                              'timef': now_temp, 
@@ -113,8 +123,12 @@ def check_register():
         session['theme'] = 'white'
         return redirect('/')
     else:
+        captcha_text, captcha_image = defender.generate_captcha()
+        session['captcha'] = captcha_text.lower()
         return render_template('user/register.html',
-                               t_error='The username is already exist.', t_theme=get_theme())
+                               t_error='The username is already exist.',
+                               t_theme=get_theme(),
+                               t_captcha_image=captcha_image)
     
 
 @user_app.route('/profile') # 提供用户信息页面
