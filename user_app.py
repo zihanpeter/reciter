@@ -25,6 +25,36 @@ db = client.reciter
     admin 是否为管理员
 '''
 
+from collections import defaultdict
+from flask import abort
+
+# 设置频率限制参数
+LIMIT = 5  # 允许的最大请求次数
+PERIOD = 60  # 时间窗口（秒）
+
+# 存储IP地址和对应的访问次数及时间戳
+visits = defaultdict(list)
+
+def is_rate_limited(ip):
+    current_time = time.time()
+    for timestamp in visits[ip]:
+        # 移除时间窗口之外的记录
+        if current_time - timestamp > PERIOD:
+            visits[ip].remove(timestamp)
+        else:
+            break
+    # 如果请求次数超过限制，则返回True
+    if len(visits[ip]) >= LIMIT:
+        return True
+    # 否则，添加当前时间戳并返回False
+    visits[ip].append(current_time)
+    return False
+
+@user_app.before_request
+def limit_requests():
+    ip = request.remote_addr
+    if is_rate_limited(ip):
+        abort(429)  # 返回429 Too Many Requests
 
 def get_theme():
     theme = session.get('theme')
