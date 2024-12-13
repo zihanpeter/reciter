@@ -21,8 +21,8 @@ from collections import defaultdict
 from flask import abort
 
 # 设置频率限制参数
-LIMIT = 5  # 允许的最大请求次数
-PERIOD = 60  # 时间窗口（秒）
+LIMIT = 7  # 允许的最大请求次数
+PERIOD = 10  # 时间窗口（秒）
 
 # 存储IP地址和对应的访问次数及时间戳
 visits = defaultdict(list)
