@@ -30,7 +30,7 @@ from collections import defaultdict
 from flask import abort
 
 # 设置频率限制参数
-LIMIT = 7  # 允许的最大请求次数
+LIMIT = 10  # 允许的最大请求次数
 PERIOD = 10  # 时间窗口（秒）
 
 # 存储IP地址和对应的访问次数及时间戳
@@ -62,6 +62,21 @@ def get_theme():
     if theme == None:
         theme = 'white'
     return theme
+
+AUTO_BOT_UA = ['bot', 'spider', 'crawl']
+
+@yule_app.before_request
+def check_bot():
+    user_agent = request.headers.get('User-Agent', '').lower()
+    if any(ua in user_agent for ua in AUTO_BOT_UA):
+        abort(403)  # 禁止访问
+
+# 检查HTTP头部信息
+@yule_app.before_request
+def check_http_headers():
+    accept = request.headers.get('Accept', '')
+    if 'text/html' not in accept and 'application/xhtml+xml' not in accept:
+        abort(403)  # 禁止访问
 
 
 @yule_app.route('/yule')
